@@ -1,0 +1,439 @@
+@page "/"
+@using Tracker.Client.Services
+@using Tracker.Shared.Auth
+@attribute [Authorize]
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@inject ILogger<Dashboard> Logger
+
+<PageTitle>Dashboard</PageTitle>
+
+<div class="bg-white shadow">
+    <div class="px-4 sm:px-6 lg:max-w-7xl lg:mx-auto lg:px-8">
+        <div class="py-6 md:flex md:items-center md:justify-between">
+            <div class="flex-1 min-w-0">
+                <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                    Welcome back, @userName!
+                </h1>
+            </div>
+            <div class="mt-4 flex md:mt-0 md:ml-4">
+                <button type="button" @onclick="() => NavigationManager.NavigateTo('/incidents/new')" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    New Incident
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-lg leading-6 font-medium text-gray-900 mb-4">Overview</h2>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <!-- Active Incidents -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Active Incidents
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900">
+                                        12
+                                    </div>
+                                    <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                        <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="sr-only">
+                                            Increased by
+                                        </span>
+                                        8.6%
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                    <div class="text-sm">
+                        <a href="/incidents?status=active" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            View all<span class="sr-only"> active incidents</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Individuals -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Total Individuals
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900">
+                                        1,234
+                                    </div>
+                                    <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                        <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="sr-only">
+                                            Increased by
+                                        </span>
+                                        12.4%
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                    <div class="text-sm">
+                        <a href="/individuals" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            View all<span class="sr-only"> individuals</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Open Tasks -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Open Tasks
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900">
+                                        8
+                                    </div>
+                                    <div class="ml-2 flex items-baseline text-sm font-semibold text-red-600">
+                                        <svg class="self-center flex-shrink-0 h-5 w-5 text-red-500 transform rotate-180" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="sr-only">
+                                            Decreased by
+                                        </span>
+                                        2.1%
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                    <div class="text-sm">
+                        <a href="/tasks" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            View all<span class="sr-only"> tasks</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Team Members
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900">
+                                        24
+                                    </div>
+                                    <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                        <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="sr-only">
+                                            Increased by
+                                        </span>
+                                        3.2%
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                    <div class="text-sm">
+                        <a href="/team" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            View all<span class="sr-only"> team members</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="mt-8">
+            <h2 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Activity</h2>
+            <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                <ul class="divide-y divide-gray-200">
+                    @foreach (var activity in recentActivities)
+                    {
+                        <li>
+                            <div class="px-4 py-4 sm:px-6">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm font-medium text-indigo-600 truncate">
+                                        @activity.Description
+                                    </p>
+                                    <div class="ml-2 flex-shrink-0 flex">
+                                        <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            @activity.Type
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mt-2 sm:flex sm:justify-between">
+                                    <div class="sm:flex">
+                                        <p class="flex items-center text-sm text-gray-500">
+                                            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                            </svg>
+                                            @activity.Timestamp.ToString("MMM d, yyyy h:mm tt")
+                                        </p>
+                                    </div>
+                                    <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                                        <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                        </svg>
+                                        @activity.User
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <!-- Recent Incidents -->
+        <div class="mt-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg leading-6 font-medium text-gray-900">Recent Incidents</h2>
+                <a href="/incidents" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">View all</a>
+            </div>
+            <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                <ul class="divide-y divide-gray-200">
+                    @foreach (var incident in recentIncidents)
+                    {
+                        <li>
+                            <a href="@($"/incidents/{incident.Id}")" class="block hover:bg-gray-50">
+                                <div class="px-4 py-4 sm:px-6">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @GetStatusColor(incident.Status)">
+                                                @incident.Status
+                                            </p>
+                                            <p class="ml-2 text-sm font-medium text-indigo-600 truncate">
+                                                @incident.Title
+                                            </p>
+                                        </div>
+                                        <div class="ml-2 flex-shrink-0 flex">
+                                            <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @GetSeverityColor(incident.Severity)">
+                                                @incident.Severity
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 sm:flex sm:justify-between">
+                                        <div class="sm:flex">
+                                            <p class="flex items-center text-sm text-gray-500">
+                                                <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                                </svg>
+                                                @incident.ReportedDate.ToString("MMM d, yyyy")
+                                            </p>
+                                        </div>
+                                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                                            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                            </svg>
+                                            @incident.ReportedBy
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string userName = "";
+    
+    private List<ActivityItem> recentActivities = new()
+    {
+        new ActivityItem { 
+            Description = "New incident reported: Server Outage", 
+            Type = "Incident", 
+            Timestamp = DateTime.Now.AddMinutes(-15), 
+            User = "John Smith" 
+        },
+        new ActivityItem { 
+            Description = "New individual added to the system", 
+            Type = "Individual", 
+            Timestamp = DateTime.Now.AddHours(-2), 
+            User = "Sarah Johnson" 
+        },
+        new ActivityItem { 
+            Description = "Contact information updated for Acme Corp", 
+            Type = "Contact", 
+            Timestamp = DateTime.Now.AddHours(-5), 
+            User = "Mike Wilson" 
+        },
+        new ActivityItem { 
+            Description = "New task assigned: Review security protocols", 
+            Type = "Task", 
+            Timestamp = DateTime.Now.AddDays(-1), 
+            User = "Emily Davis" 
+        },
+        new ActivityItem { 
+            Description = "Incident #INC-1234 resolved", 
+            Type = "Incident", 
+            Timestamp = DateTime.Now.AddDays(-2), 
+            User = "David Brown" 
+        }
+    };
+    
+    private List<IncidentItem> recentIncidents = new()
+    {
+        new IncidentItem { 
+            Id = "INC-1234", 
+            Title = "Server Outage - Main Database", 
+            Status = "Resolved", 
+            Severity = "High", 
+            ReportedDate = DateTime.Now.AddDays(-2), 
+            ReportedBy = "John Smith" 
+        },
+        new IncidentItem { 
+            Id = "INC-1233", 
+            Title = "Application Performance Degradation", 
+            Status = "In Progress", 
+            Severity = "Medium", 
+            ReportedDate = DateTime.Now.AddDays(-1), 
+            ReportedBy = "Sarah Johnson" 
+        },
+        new IncidentItem { 
+            Id = "INC-1232", 
+            Title = "User Authentication Failure", 
+            Status = "In Progress", 
+            Severity = "High", 
+            ReportedDate = DateTime.Now.AddDays(-1), 
+            ReportedBy = "Mike Wilson" 
+        },
+        new IncidentItem { 
+            Id = "INC-1231", 
+            Title = "Scheduled Maintenance Notification", 
+            Status = "Scheduled", 
+            Severity = "Low", 
+            ReportedDate = DateTime.Now.AddDays(-3), 
+            ReportedBy = "Emily Davis" 
+        },
+        new IncidentItem { 
+            Id = "INC-1230", 
+            Title = "Email Delivery Delays", 
+            Status = "Resolved", 
+            Severity = "Medium", 
+            ReportedDate = DateTime.Now.AddDays(-4), 
+            ReportedBy = "David Brown" 
+        }
+    };
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // In a real app, you would get the user's name from the authentication state
+            // For now, we'll use a placeholder
+            userName = "John";
+            
+            // In a real app, you would fetch this data from your API
+            // recentActivities = await SomeService.GetRecentActivitiesAsync();
+            // recentIncidents = await SomeService.GetRecentIncidentsAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading dashboard data");
+        }
+    }
+    
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "Open" => "bg-red-100 text-red-800",
+            "In Progress" => "bg-yellow-100 text-yellow-800",
+            "Resolved" => "bg-green-100 text-green-800",
+            "Closed" => "bg-gray-100 text-gray-800",
+            "Scheduled" => "bg-blue-100 text-blue-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+    
+    private string GetSeverityColor(string severity)
+    {
+        return severity switch
+        {
+            "Critical" => "bg-red-100 text-red-800",
+            "High" => "bg-orange-100 text-orange-800",
+            "Medium" => "bg-yellow-100 text-yellow-800",
+            "Low" => "bg-green-100 text-green-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+    
+    private class ActivityItem
+    {
+        public string Description { get; set; }
+        public string Type { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string User { get; set; }
+    }
+    
+    private class IncidentItem
+    {
+        public string Id { get; set; }
+        public string Title { get; set; }
+        public string Status { get; set; }
+        public string Severity { get; set; }
+        public DateTime ReportedDate { get; set; }
+        public string ReportedBy { get; set; }
+    }
+}

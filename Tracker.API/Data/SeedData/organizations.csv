@@ -1,0 +1,3 @@
+Id,Name,Type,Phone,Email,Street,City,State,ZipCode,Country,IsActive,CreatedAt,UpdatedAt
+00000000-0000-0000-0000-000000000001,Acme Inc.,Business,555-0100,info@acme.com,123 Main St,Anytown,CA,90210,United States,true,2023-01-01T00:00:00,2023-01-01T00:00:00
+00000000-0000-0000-0000-000000000002,Springfield High School,School,555-0200,info@springfield.edu,456 School St,Springfield,IL,62701,United States,true,2023-01-01T00:00:00,2023-01-01T00:00:00

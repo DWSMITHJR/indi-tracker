@@ -1,0 +1,89 @@
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="/">Tracker</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/incidents">
+                <span class="oi oi-warning" aria-hidden="true"></span> Incidents
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/individuals">
+                <span class="oi oi-people" aria-hidden="true"></span> Individuals
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/contacts">
+                <span class="oi oi-address-book" aria-hidden="true"></span> Contacts
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/reports">
+                <span class="oi oi-graph" aria-hidden="true"></span> Reports
+            </NavLink>
+        </li>
+        @if (isAdmin || isOperator)
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="/logviewer">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Logs
+                </NavLink>
+            </li>
+        }
+        
+        @if (isAdmin)
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="/admin">
+                    <span class="oi oi-cog" aria-hidden="true"></span> Admin
+                </NavLink>
+            </li>
+        }
+    </ul>
+</div>
+
+@using Microsoft.AspNetCore.Components.Authorization
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool isAdmin = false;
+    private bool isOperator = false;
+    
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = null!;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            
+            if (user.Identity.IsAuthenticated)
+            {
+                isAdmin = user.IsInRole("Admin");
+                isOperator = user.IsInRole("Operator") || isAdmin; // Admins can also see operator menus
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking user roles: {ex.Message}");
+        }
+    }
+}

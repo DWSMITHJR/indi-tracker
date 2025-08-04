@@ -1,0 +1,3 @@
+Id,FirstName,LastName,DateOfBirth,Gender,Email,Phone,Street,City,State,ZipCode,Country,IsActive,CreatedAt,UpdatedAt,OrganizationId,Notes,PhotoUrl
+00000000-0000-0000-0000-000000000001,John,Smith,1980-01-01,Male,john.smith@example.com,555-1001,123 Main St,Anytown,CA,90210,USA,true,2023-01-01T00:00:00,2023-01-01T00:00:00,00000000-0000-0000-0000-000000000001,Sample individual 1,https://example.com/photos/john.jpg
+00000000-0000-0000-0000-000000000002,Jane,Doe,1985-05-15,Female,jane.doe@example.com,555-1002,456 Oak St,Somewhere,NY,10001,USA,true,2023-01-01T00:00:00,2023-01-01T00:00:00,00000000-0000-0000-0000-000000000002,Sample individual 2,https://example.com/photos/jane.jpg

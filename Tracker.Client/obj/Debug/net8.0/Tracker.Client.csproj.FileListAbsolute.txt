@@ -1,0 +1,6 @@
+C:\Users\donal\source\repos\tracker\Tracker.Client\obj\Debug\net8.0\Tracker.Client.csproj.AssemblyReference.cache
+C:\Users\donal\source\repos\tracker\Tracker.Client\obj\Debug\net8.0\Tracker.Client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\donal\source\repos\tracker\Tracker.Client\obj\Debug\net8.0\Tracker.Client.AssemblyInfoInputs.cache
+C:\Users\donal\source\repos\tracker\Tracker.Client\obj\Debug\net8.0\Tracker.Client.AssemblyInfo.cs
+C:\Users\donal\source\repos\tracker\Tracker.Client\obj\Debug\net8.0\Tracker.Client.csproj.CoreCompileInputs.cache
+C:\Users\donal\source\repos\tracker\Tracker.Client\obj\Debug\net8.0\Tracker.Client.MvcApplicationPartsAssemblyInfo.cache

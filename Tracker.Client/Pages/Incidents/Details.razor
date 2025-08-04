@@ -1,0 +1,456 @@
+@page "/incidents/{id}"
+@using Microsoft.AspNetCore.Components.Authorization
+@using Tracker.Client.Models
+@using Tracker.Client.Services
+@using Tracker.Shared.Auth
+@using Tracker.Shared.Models
+@attribute [Authorize]
+@inject IIncidentService IncidentService
+@inject IIndividualService IndividualService
+@inject IOrganizationService OrganizationService
+@inject IContactService ContactService
+@inject NavigationManager NavigationManager
+@inject ILogger<Details> Logger
+
+@if (incident == null)
+{
+    <div class="flex justify-center items-center p-8">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    </div>
+}
+else
+{
+    <!-- Page header with breadcrumb and actions -->
+    <div class="lg:flex lg:items-center lg:justify-between mb-6">
+        <div class="flex-1 min-w-0">
+            <nav class="flex" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-4">
+                    <li>
+                        <div>
+                            <a href="/incidents" class="text-sm font-medium text-gray-500 hover:text-gray-700">Incidents</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="ml-4 text-sm font-medium text-gray-500">@incident.IncidentNumber</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+            <h2 class="mt-2 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">@incident.Title</h2>
+            <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+                <div class="mt-2 flex items-center text-sm text-gray-500">
+                    <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                    </svg>
+                    Created on <time datetime="@incident.CreatedAt.ToString("yyyy-MM-dd")">@incident.CreatedAt.ToString("MMMM d, yyyy")</time>
+                </div>
+                @if (incident.UpdatedAt.HasValue)
+                {
+                    <div class="mt-2 flex items-center text-sm text-gray-500">
+                        <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                        </svg>
+                        Last updated <time datetime="@incident.UpdatedAt.Value.ToString("yyyy-MM-dd")">@incident.UpdatedAt.Value.ToString("MMMM d, yyyy")</time>
+                    </div>
+                }
+                @if (incident.ResolvedAt.HasValue)
+                {
+                    <div class="mt-2 flex items-center text-sm text-gray-500">
+                        <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        Resolved on <time datetime="@incident.ResolvedAt.Value.ToString("yyyy-MM-dd")">@incident.ResolvedAt.Value.ToString("MMMM d, yyyy")</time>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="mt-5 flex lg:mt-0 lg:ml-4">
+            <span class="hidden sm:block">
+                <button type="button" @onclick="@(() => NavigationManager.NavigateTo("/incidents"))" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                    Back to Incidents
+                </button>
+            </span>
+            <span class="hidden sm:block ml-3">
+                <button type="button" @onclick="@(() => NavigationManager.NavigateTo($"/incidents/{incident.Id}/edit"))" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                    Edit
+                </button>
+            </span>
+            <span class="hidden sm:block ml-3">
+                <button type="button" @onclick="@(() => NavigationManager.NavigateTo($"/incidents/{incident.Id}/timeline"))" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    View Timeline
+                </button>
+            </span>
+            <span class="sm:ml-3">
+                @if (incident.Status == "Resolved" || incident.Status == "Closed")
+                {
+                    <button type="button" @onclick="ReopenIncident" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                        </svg>
+                        Reopen
+                    </button>
+                }
+                else if (incident.Status == "Open" || incident.Status == "In Progress")
+                {
+                    <button type="button" @onclick="@(() => NavigationManager.NavigateTo($"/incidents/{incident.Id}/resolve"))" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Resolve
+                    </button>
+                }
+            </span>
+        </div>
+    </div>
+
+    <!-- Main content area -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left column -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Description card -->
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Description</h3>
+                </div>
+                <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
+                    <div class="prose max-w-none">
+                        @if (string.IsNullOrWhiteSpace(incident.Description))
+                        {
+                            <p class="text-sm text-gray-500 italic">No description provided.</p>
+                        }
+                        else
+                        {
+                            @((MarkupString)Markdig.Markdown.ToHtml(incident.Description))
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline preview -->
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Activity</h3>
+                        <a href="/incidents/@incident.Id/timeline" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">View all</a>
+                    </div>
+                </div>
+                <div class="bg-white overflow-hidden">
+                    <ul class="divide-y divide-gray-200">
+                        @if (recentActivity != null && recentActivity.Any())
+                        {
+                            @foreach (var activity in recentActivity.Take(5))
+                            {
+                                <li class="px-4 py-4 sm:px-6">
+                                    <div class="flex space-x-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
+                                                @GetUserInitials(activity.UpdatedByName ?? "System")
+                                            </div>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-sm text-gray-800">
+                                                <span class="font-medium">@(activity.UpdatedByName ?? "System")</span>
+                                                @activity.Description
+                                            </p>
+                                            <p class="text-sm text-gray-500">
+                                                <time datetime="@activity.Timestamp.ToString("yyyy-MM-ddTHH:mm:ssZ")">@FormatRelativeTime(activity.Timestamp)</time>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="px-4 py-4 sm:px-6 text-center text-sm text-gray-500">
+                                No recent activity
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="space-y-6">
+            <!-- Details card -->
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Details</h3>
+                </div>
+                <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                    <dl class="sm:divide-y sm:divide-gray-200">
+                        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">Status</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @GetStatusBadgeClass(incident.Status)">
+                                    @incident.Status
+                                </span>
+                            </dd>
+                        </div>
+                        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">Priority</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @GetPriorityBadgeClass(incident.Priority)">
+                                    @incident.Priority
+                                </span>
+                            </dd>
+                        </div>
+                        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">Type</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">@incident.Type</dd>
+                        </div>
+                        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">Reported By</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">@incident.ReportedBy</dd>
+                        </div>
+                        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">Assigned To</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                @if (!string.IsNullOrEmpty(incident.AssignedTo))
+                                {
+                                    <div class="flex items-center">
+                                        <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
+                                            @GetUserInitials(incident.AssignedTo)
+                                        </div>
+                                        <div class="ml-2">
+                                            <div class="text-sm font-medium text-gray-900">@incident.AssignedTo</div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-gray-400">Unassigned</span>
+                                }
+                            </dd>
+                        </div>
+                        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">Created</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                <time datetime="@incident.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ssZ")">@incident.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")</time>
+                            </dd>
+                        </div>
+                        @if (incident.UpdatedAt.HasValue)
+                        {
+                            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Last Updated</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    <time datetime="@incident.UpdatedAt.Value.ToString("yyyy-MM-ddTHH:mm:ssZ")">@incident.UpdatedAt.Value.ToString("MMMM d, yyyy 'at' h:mm tt")</time>
+                                </dd>
+                            </div>
+                        }
+                        @if (incident.ResolvedAt.HasValue)
+                        {
+                            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Resolved</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    <time datetime="@incident.ResolvedAt.Value.ToString("yyyy-MM-ddTHH:mm:ssZ")">@incident.ResolvedAt.Value.ToString("MMMM d, yyyy 'at' h:mm tt")</time>
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Related items -->
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Related Items</h3>
+                </div>
+                <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                    <dl class="sm:divide-y sm:divide-gray-200">
+                        <!-- Individual section removed as IncidentDto doesn't have IndividualId -->
+                        @if (!string.IsNullOrEmpty(incident.OrganizationId) && relatedOrganization != null)
+                        {
+                            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Organization</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    <a href="/organizations/@incident.OrganizationId" class="text-indigo-600 hover:text-indigo-900">@relatedOrganization.Name</a>
+                                </dd>
+                            </div>
+                        }
+                        @if (relatedContacts != null && relatedContacts.Any())
+                        {
+                            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Contacts</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 space-y-2">
+                                    @foreach (var contact in relatedContacts)
+                                    {
+                                        <div>
+                                            <a href="/contacts/@contact.Id" class="text-indigo-600 hover:text-indigo-900">@($"{contact.FirstName} {contact.LastName}")</a>
+                                            <div class="text-xs text-gray-500">@contact.Relationship</div>
+                                        </div>
+                                    }
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+}
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    private Tracker.Client.Models.IncidentDto incident = null!;
+    private List<TimelineEntryDto> recentActivity = new();
+    private IndividualDto? relatedIndividual;
+    private OrganizationDto? relatedOrganization;
+    private List<ContactDto> relatedContacts = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrEmpty(Id))
+        {
+            // Handle case where Id is not provided
+            NavigationManager.NavigateTo("/incidents");
+            return;
+        }
+
+        try
+        {
+            // Load incident details (Id is not null here due to earlier check)
+            incident = await IncidentService.GetIncidentByIdAsync(Id!);
+            
+            // Load related data in parallel
+            var tasks = new List<Task>();
+            
+            // Individual loading removed as IncidentDto doesn't have IndividualId
+            
+            if (!string.IsNullOrEmpty(incident.OrganizationId))
+            {
+                tasks.Add(Task.Run(async () => 
+                {
+                    try { relatedOrganization = await OrganizationService.GetOrganizationByIdAsync(incident.OrganizationId); }
+                    catch (Exception ex) { Logger.LogError(ex, "Error loading related organization"); }
+                }));
+            }
+            
+            tasks.Add(Task.Run(async () => 
+            {
+                try { recentActivity = (await IncidentService.GetTimelineEntriesAsync(Id, 1, 5)).Items.ToList(); }
+                catch (Exception ex) { Logger.LogError(ex, "Error loading recent activity"); }
+            }));
+            
+            tasks.Add(Task.Run(async () => 
+            {
+                try { relatedContacts = (await ContactService.GetContactsByIncidentIdAsync(Id)).ToList(); }
+                catch (Exception ex) { Logger.LogError(ex, "Error loading related contacts"); }
+            }));
+            
+            await Task.WhenAll(tasks);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading incident details");
+            // In a real app, you would show an error message to the user
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task ReopenIncident()
+    {
+        if (string.IsNullOrEmpty(Id))
+        {
+            Logger.LogWarning("Cannot reopen incident: Id is null or empty");
+            return;
+        }
+
+        try
+        {
+            var result = await IncidentService.UpdateIncidentStatusAsync(Id!, "Open", "Incident reopened");
+            if (result)
+            {
+                // Refresh the page to show updated status
+                NavigationManager.NavigateTo($"/incidents/{Id}", forceLoad: true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error reopening incident");
+            // In a real app, you would show an error message to the user
+        }
+    }
+
+    private string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Open" => "bg-red-100 text-red-800",
+            "In Progress" => "bg-yellow-100 text-yellow-800",
+            "Resolved" => "bg-green-100 text-green-800",
+            "Closed" => "bg-gray-100 text-gray-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string GetPriorityBadgeClass(string priority)
+    {
+        return priority switch
+        {
+            "Low" => "bg-green-100 text-green-800",
+            "Medium" => "bg-yellow-100 text-yellow-800",
+            "High" => "bg-orange-100 text-orange-800",
+            "Critical" => "bg-red-100 text-red-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string GetUserInitials(string fullName)
+    {
+        if (string.IsNullOrWhiteSpace(fullName))
+            return "??";
+            
+        var names = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (names.Length == 0)
+            return "??";
+            
+        if (names.Length == 1)
+            return names[0][0].ToString().ToUpper();
+            
+        return $"{names[0][0]}{names[names.Length - 1][0]}".ToUpper();
+    }
+
+    private string FormatRelativeTime(DateTime dateTime)
+    {
+        var timeSpan = DateTime.UtcNow - dateTime.ToUniversalTime();
+        
+        if (timeSpan.TotalSeconds < 60)
+            return "just now";
+            
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} minute{(timeSpan.TotalMinutes >= 2 ? "s" : "")} ago";
+            
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hour{(timeSpan.TotalHours >= 2 ? "s" : "")} ago";
+            
+        if (timeSpan.TotalDays < 30)
+            return $"{(int)timeSpan.TotalDays} day{(timeSpan.TotalDays >= 2 ? "s" : "")} ago";
+            
+        if (timeSpan.TotalDays < 365)
+            return $"{(int)(timeSpan.TotalDays / 30)} month{((int)(timeSpan.TotalDays / 30) >= 2 ? "s" : "")} ago";
+            
+        return $"{(int)(timeSpan.TotalDays / 365)} year{((int)(timeSpan.TotalDays / 365) >= 2 ? "s" : "")} ago";
+    }
+}

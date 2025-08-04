@@ -1,0 +1,55 @@
+@Tracker.API_HostAddress = http://localhost:5132
+@contentType = application/json
+
+### Get all incidents
+GET {{Tracker.API_HostAddress}}/api/incidents
+Accept: {{contentType}}
+
+### Get incident by ID
+# @name getIncident
+GET {{Tracker.API_HostAddress}}/api/incidents/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Accept: {{contentType}}
+
+### Create a new incident
+POST {{Tracker.API_HostAddress}}/api/incidents
+Content-Type: {{contentType}}
+
+{
+  "title": "Test Incident",
+  "description": "This is a test incident created via API",
+  "status": "Open",
+  "priority": "Medium",
+  "type": "Test",
+  "reportedById": "00000000-0000-0000-0000-000000000001",
+  "organizationId": "00000000-0000-0000-0000-000000000001"
+}
+
+### Update an incident
+PUT {{Tracker.API_HostAddress}}/api/incidents/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Content-Type: {{contentType}}
+
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "title": "Updated Test Incident",
+  "description": "This incident has been updated",
+  "status": "InProgress",
+  "priority": "High",
+  "type": "Test",
+  "reportedById": "00000000-0000-0000-0000-000000000001"
+}
+
+### Delete an incident
+DELETE {{Tracker.API_HostAddress}}/api/incidents/3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+### Get timeline entries for an incident
+GET {{Tracker.API_HostAddress}}/api/incidents/3fa85f64-5717-4562-b3fc-2c963f66afa6/timeline
+Accept: {{contentType}}
+
+### Add timeline entry to an incident
+POST {{Tracker.API_HostAddress}}/api/incidents/3fa85f64-5717-4562-b3fc-2c963f66afa6/timeline
+Content-Type: {{contentType}}
+
+{
+  "event": "StatusChanged",
+  "description": "Incident status changed to InProgress"
+}

@@ -1,0 +1,3 @@
+Id,FirstName,LastName,Relationship,Email,Phone,Street,City,State,ZipCode,Country,IsPrimary,IsEmergency,Notes,IndividualId,OrganizationId,CreatedAt,UpdatedAt
+00000000-0000-0000-0000-000000000001,Robert,Johnson,Friend,robert.j@example.com,555-2001,789 Pine St,Anytown,CA,90210,USA,true,true,Friend of John,00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000001,2023-01-01T00:00:00,2023-01-01T00:00:00
+00000000-0000-0000-0000-000000000002,Sarah,Williams,Sister,sarah.w@example.com,555-2002,101 Maple Dr,Somewhere,NY,10001,USA,true,true,Jane's sister,00000000-0000-0000-0000-000000000002,00000000-0000-0000-0000-000000000002,2023-01-01T00:00:00,2023-01-01T00:00:00

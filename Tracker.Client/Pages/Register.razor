@@ -1,0 +1,151 @@
+@page "/register"
+@using Tracker.Client.Services
+@using Tracker.Shared.Auth
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@inject ILogger<Register> Logger
+
+<PageTitle>Register</PageTitle>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Create a new account
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Or
+                <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    sign in to your existing account
+                </a>
+            </p>
+        </div>
+        
+        <div class="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <EditForm Model="@model" OnValidSubmit="HandleValidSubmit" class="space-y-6">
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-gray-700">First name</label>
+                            <InputText id="first-name" @bind-Value="model.FirstName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                            <ValidationMessage For="@(() => model.FirstName)" class="text-red-600 text-sm" />
+                        </div>
+                        <div>
+                            <label for="last-name" class="block text-sm font-medium text-gray-700">Last name</label>
+                            <InputText id="last-name" @bind-Value="model.LastName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                            <ValidationMessage For="@(() => model.LastName)" class="text-red-600 text-sm" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                        <InputText id="email" type="email" @bind-Value="model.Email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                        <ValidationMessage For="@(() => model.Email)" class="text-red-600 text-sm" />
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <InputText id="password" type="password" @bind-Value="model.Password" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                        <ValidationMessage For="@(() => model.Password)" class="text-red-600 text-sm" />
+                    </div>
+
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm password</label>
+                        <InputText id="confirm-password" type="password" @bind-Value="model.ConfirmPassword" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                        <ValidationMessage For="@(() => model.ConfirmPassword)" class="text-red-600 text-sm" />
+                    </div>
+
+                    <div>
+                        <label for="enrollment-code" class="block text-sm font-medium text-gray-700">Enrollment code (optional)</label>
+                        <InputText id="enrollment-code" @bind-Value="model.EnrollmentCode" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                        <p class="mt-1 text-sm text-gray-500">If you have an enrollment code, enter it here to join an existing organization.</p>
+                    </div>
+
+                    <div id="organization-info" class="@(string.IsNullOrEmpty(model.EnrollmentCode) ? "" : "hidden")">
+                        <label for="organization-name" class="block text-sm font-medium text-gray-700">Organization name</label>
+                        <InputText id="organization-name" @bind-Value="model.OrganizationName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                        <p class="mt-1 text-sm text-gray-500">If you don't have an enrollment code, enter your organization name to create a new one.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Register
+                    </button>
+                </div>
+                
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="rounded-md bg-red-50 p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">
+                                    @errorMessage
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private RegisterRequest model = new();
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // If the user is already logged in, redirect to the home page
+        var isAuthenticated = await AuthService.IsAuthenticated();
+        if (isAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            errorMessage = string.Empty;
+            var result = await AuthService.Register(model);
+            
+            if (result.Success)
+            {
+                // Auto-login after successful registration
+                var loginResult = await AuthService.Login(new LoginRequest
+                {
+                    Email = model.Email,
+                    Password = model.Password,
+                    RememberMe = true
+                });
+                
+                if (loginResult.Success)
+                {
+                    NavigationManager.NavigateTo("/");
+                }
+                else
+                {
+                    // If auto-login fails, redirect to login page
+                    NavigationManager.NavigateTo("/login");
+                }
+            }
+            else
+            {
+                errorMessage = result.Error ?? "Registration failed. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error during registration");
+            errorMessage = "An error occurred while trying to register. Please try again.";
+        }
+    }
+}

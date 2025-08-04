@@ -1,0 +1,3 @@
+Id,FirstName,LastName,Email,PhoneNumber,Role,IsActive,EmailConfirmed,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnabled,AccessFailedCount,CreatedAt,UpdatedAt
+00000000-0000-0000-0000-000000000001,Admin,User,admin@tracker.com,555-0101,Admin,true,true,false,false,false,0,2023-01-01T00:00:00,2023-01-01T00:00:00
+00000000-0000-0000-0000-000000000002,John,Doe,john.doe@example.com,555-0102,User,true,true,false,false,false,0,2023-01-01T00:00:00,2023-01-01T00:00:00
