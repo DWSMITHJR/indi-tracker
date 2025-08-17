@@ -12,3 +12,4 @@ C:\Users\donal\source\repos\tracker\Tracker.Infrastructure\obj\Debug\net8.0\refi
 C:\Users\donal\source\repos\tracker\Tracker.Infrastructure\obj\Debug\net8.0\Tracker.Infrastructure.pdb
 C:\Users\donal\source\repos\tracker\Tracker.Infrastructure\obj\Debug\net8.0\Tracker.Infrastructure.genruntimeconfig.cache
 C:\Users\donal\source\repos\tracker\Tracker.Infrastructure\obj\Debug\net8.0\ref\Tracker.Infrastructure.dll
+C:\Users\donal\source\repos\tracker\Tracker.Infrastructure\obj\Debug\net8.0\Tracker.Infrastructure.sourcelink.json

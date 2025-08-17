@@ -19,10 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tracker.Shared\Tracker.Shared.csproj" />
-    <Reference Include="Tracker.Shared">
-      <HintPath>..\Tracker.Shared\bin\$(Configuration)\net8.0\Tracker.Shared.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Tracker.Shared\Tracker.Shared.csproj">
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

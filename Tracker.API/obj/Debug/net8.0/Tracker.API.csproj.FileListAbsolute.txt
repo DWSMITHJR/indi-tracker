@@ -148,3 +148,4 @@ C:\Users\donal\source\repos\tracker\Tracker.API\obj\Debug\net8.0\refint\Tracker.
 C:\Users\donal\source\repos\tracker\Tracker.API\obj\Debug\net8.0\Tracker.API.pdb
 C:\Users\donal\source\repos\tracker\Tracker.API\obj\Debug\net8.0\Tracker.API.genruntimeconfig.cache
 C:\Users\donal\source\repos\tracker\Tracker.API\obj\Debug\net8.0\ref\Tracker.API.dll
+C:\Users\donal\source\repos\tracker\Tracker.API\obj\Debug\net8.0\Tracker.API.sourcelink.json

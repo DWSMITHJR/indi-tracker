@@ -9,3 +9,4 @@ C:\Users\donal\source\repos\tracker\Tracker.Shared\obj\Debug\net8.0\Tracker.Shar
 C:\Users\donal\source\repos\tracker\Tracker.Shared\obj\Debug\net8.0\refint\Tracker.Shared.dll
 C:\Users\donal\source\repos\tracker\Tracker.Shared\obj\Debug\net8.0\Tracker.Shared.pdb
 C:\Users\donal\source\repos\tracker\Tracker.Shared\obj\Debug\net8.0\ref\Tracker.Shared.dll
+C:\Users\donal\source\repos\tracker\Tracker.Shared\obj\Debug\net8.0\Tracker.Shared.sourcelink.json
